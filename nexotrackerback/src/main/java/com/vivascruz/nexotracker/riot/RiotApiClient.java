@@ -14,7 +14,7 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class RiotApiClient {
 
-	private final String token = "RGAPI-9ac062b4-8f03-4e91-a2f0-4a83472c7031";
+	private final String token = "RGAPI-11d35fd9-25ab-416b-9f98-592ae1c0b879";
 
 	private final Map<String, RiotRegion> regions = new HashMap<>();
 

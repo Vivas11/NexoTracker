@@ -14,44 +14,29 @@ import jakarta.persistence.Table;
 public class Summoner {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	private String puuid;
 
-    @Column(nullable = false, unique = true, name = "puuid")
-    private String puuid;
-    
-    @Column(nullable = false, name = "profileIconID")
-    private int profileIconID;
+	@Column(name = "profile_icon_id")
+	private Integer profileIconId;
 
-    @Column(nullable = false, name = "revisionDate")
-    private long revisionDate;
+	@Column(name = "revision_date")
+	private Long revisionDate;
 
-    @Column(nullable = false, name = "summonerLevel")
-	private long summonerLevel;
-    
-    public Summoner() {
+	@Column(name = "summoner_level")
+	private Long summonerLevel;
+
+	public Summoner() {
 	}
 
-	public Summoner(String puuid, int profileIconID, long revisionDate, long summonerLevel) {
+	public Summoner(String puuid, int profileIconId, long revisionDate, long summonerLevel) {
 		super();
 		this.puuid = puuid;
-		this.profileIconID = profileIconID;
+		this.profileIconId = profileIconId;
 		this.revisionDate = revisionDate;
 		this.summonerLevel = summonerLevel;
 	}
-	
-	
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public String getPuuid() {
 		return puuid;
 	}
@@ -60,12 +45,12 @@ public class Summoner {
 		this.puuid = puuid;
 	}
 
-	public int getProfileIconID() {
-		return profileIconID;
+	public int getProfileIconId() {
+		return profileIconId;
 	}
 
-	public void setProfileIconID(int profileIconID) {
-		this.profileIconID = profileIconID;
+	public void setProfileIconId(int profileIconId) {
+		this.profileIconId = profileIconId;
 	}
 
 	public long getRevisionDate() {
@@ -86,21 +71,21 @@ public class Summoner {
 
 	@Override
 	public int hashCode() {
-	    return Objects.hash(puuid);
+		return Objects.hash(puuid);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 
-	    if (this == obj)
-	        return true;
+		if (this == obj)
+			return true;
 
-	    if (obj == null || getClass() != obj.getClass())
-	        return false;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
 
-	    Summoner other = (Summoner) obj;
+		Summoner other = (Summoner) obj;
 
-	    return Objects.equals(puuid, other.puuid);
+		return Objects.equals(puuid, other.puuid);
 	}
-    
+
 }

@@ -14,7 +14,7 @@ public class SummonerDTO {
 	/**
 	 * Integer that represents the icon which is used by the player in game
 	 */
-	private int profileIconID;
+	private int profileIconId;
 	/**
 	 * Date summoner was last modified specified as epoch milliseconds
 	 */
@@ -28,7 +28,17 @@ public class SummonerDTO {
 	}
 
 	public SummonerDTO(int profileIconID, long revisionDate, long summonerLevel) {
-		this.profileIconID = profileIconID;
+		this.profileIconId = profileIconID;
+		this.revisionDate = revisionDate;
+		this.summonerLevel = summonerLevel;
+	}
+	
+	
+
+	public SummonerDTO(String puuid, int profileIconId, long revisionDate, long summonerLevel) {
+		super();
+		this.puuid = puuid;
+		this.profileIconId = profileIconId;
 		this.revisionDate = revisionDate;
 		this.summonerLevel = summonerLevel;
 	}
@@ -41,12 +51,12 @@ public class SummonerDTO {
 		this.puuid = puuid;
 	}
 
-	public int getProfileIconID() {
-		return profileIconID;
+	public int getProfileIconId() {
+		return profileIconId;
 	}
 
-	public void setProfileIconID(int profileIconID) {
-		this.profileIconID = profileIconID;
+	public void setProfileIconId(int profileIconId) {
+		this.profileIconId = profileIconId;
 	}
 
 	public long getRevisionDate() {

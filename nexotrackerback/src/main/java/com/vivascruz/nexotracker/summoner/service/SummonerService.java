@@ -1,13 +1,17 @@
 package com.vivascruz.nexotracker.summoner.service;
 
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vivascruz.nexotracker.riot.RiotApiClient;
 import com.vivascruz.nexotracker.summoner.dto.SummonerDTO;
 import com.vivascruz.nexotracker.summoner.entity.Summoner;
 import com.vivascruz.nexotracker.summoner.repository.SummonerRepository;
@@ -18,7 +22,41 @@ public class SummonerService {
 	private SummonerRepository summoRepo;
 
 	@Autowired
+	private RiotApiClient riotApi;
+	
+	@Autowired
 	private ModelMapper modelMapper;
+
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	public SummonerDTO getByPuuid(String puuid, String server) {
+		
+		if(exists(puuid)) {
+			return modelMapper.map(summoRepo.findByPuuid(puuid), SummonerDTO.class);
+		}
+		
+
+		try {
+		HttpResponse<String> response = riotApi.summonerByPuuid(puuid, server);
+		
+		SummonerDTO dto = objectMapper.readValue(response.body(), SummonerDTO.class);
+
+        create(dto);
+
+        return modelMapper.map(summoRepo.findByPuuid(puuid), SummonerDTO.class);
+		} catch (Exception e) {
+	        throw new RuntimeException(e);
+	    }
+	}
+	
+	public SummonerDTO getByTag(String name, String tag, String server) {
+
+		String puuid = riotApi.summonerByTag(name, tag, server).getPuuid();
+		
+		return getByPuuid(puuid, server);
+		
+	}
 
 	public long count() {
 		return summoRepo.count();
@@ -29,11 +67,15 @@ public class SummonerService {
 	}
 
 	public int create(SummonerDTO data) {
+		if (summoRepo.existsByPuuid(data.getPuuid())) {
+			return 409;
+		}
 		try {
 			Summoner entity = modelMapper.map(data, Summoner.class);
 			summoRepo.save(entity);
 			return 200;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return 500;
 		} 
 	}
@@ -65,7 +107,7 @@ public class SummonerService {
 
 		if (found.isPresent()) {
 			Summoner temp = found.get();
-			temp.setProfileIconID(newData.getProfileIconID());
+			temp.setProfileIconId(newData.getProfileIconId());
 			temp.setRevisionDate(newData.getRevisionDate());
 			temp.setSummonerLevel(newData.getSummonerLevel());
 			summoRepo.save(temp);
