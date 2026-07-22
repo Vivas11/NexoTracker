@@ -1,13 +1,9 @@
-export class SummonerDto {
+export interface SummonerDto {
   puuid: string;
+  name: string;
+  tag: string;
+  server: string;
   profileIconId: number;
-  revisonDate: number;
+  revisionDate: number;
   summonerLevel: number;
-
-  constructor(puuide: string, profileIconId: number, revisonDate: number, summonerLevel: number) {
-    this.puuid = puuide;
-    this.profileIconId = profileIconId;
-    this.revisonDate = revisonDate;
-    this.summonerLevel = summonerLevel;
-  }
 }

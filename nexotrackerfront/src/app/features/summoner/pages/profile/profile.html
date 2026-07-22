@@ -1,1 +1,11 @@
-<p>profile works!</p>
+<h1>Prueba Profile</h1>
+@if(summoner()){
+  <div>
+    <p>Nombre: {{ summoner()?.name }}</p>
+    <p>Nivel: {{ summoner()?.summonerLevel }}</p>
+  </div>
+} @else {
+  <div class="loading">
+    <p>Cargando usuarios desde la API...</p>
+  </div>
+}

@@ -15,7 +15,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'profile/:gameName/:tag',
+    path: 'profile/:server/:gameName/:tag',
     component: Profile
   },
 

@@ -7,14 +7,20 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.vivascruz.nexotracker.summoner.dto.SummonerDto;
 
 import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class RiotApiClient {
 
-	private final String token = "RGAPI-11d35fd9-25ab-416b-9f98-592ae1c0b879";
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	private final String token = "RGAPI-abb80456-eaf5-426a-aea2-87795e278d7e";
 
 	private final Map<String, RiotRegion> regions = new HashMap<>();
 
@@ -33,49 +39,49 @@ public class RiotApiClient {
 
 		regionalRoutes.put("ASIA", "https://asia.api.riotgames.com");
 
-		// Routing plataforma
-		platformRoutes.put("LA1", "https://la1.api.riotgames.com");
-
-		platformRoutes.put("LA2", "https://la2.api.riotgames.com");
-
-		platformRoutes.put("NA1", "https://na1.api.riotgames.com");
-
-		platformRoutes.put("BR1", "https://br1.api.riotgames.com");
-
-		platformRoutes.put("EUW1", "https://euw1.api.riotgames.com");
-
-		platformRoutes.put("EUN1", "https://eun1.api.riotgames.com");
-
+		// Plataforma -> host de la API (la URL mantiene el número, la clave no)
+		platformRoutes.put("BR", "https://br1.api.riotgames.com");
+		platformRoutes.put("EUN", "https://eun1.api.riotgames.com");
+		platformRoutes.put("EUW", "https://euw1.api.riotgames.com");
+		platformRoutes.put("JP", "https://jp1.api.riotgames.com");
 		platformRoutes.put("KR", "https://kr.api.riotgames.com");
-
-		platformRoutes.put("JP1", "https://jp1.api.riotgames.com");
+		platformRoutes.put("LAN", "https://la1.api.riotgames.com");
+		platformRoutes.put("LAS", "https://la2.api.riotgames.com");
+		platformRoutes.put("ME", "https://me1.api.riotgames.com");
+		platformRoutes.put("NA", "https://na1.api.riotgames.com");
+		platformRoutes.put("OC", "https://oc1.api.riotgames.com");
+		platformRoutes.put("RU", "https://ru.api.riotgames.com");
+		platformRoutes.put("SG", "https://sg2.api.riotgames.com");
+		platformRoutes.put("TR", "https://tr1.api.riotgames.com");
+		platformRoutes.put("TW", "https://tw2.api.riotgames.com");
+		platformRoutes.put("VN", "https://vn2.api.riotgames.com");
 
 		// Relación servidor -> región + plataforma
-		regions.put("LA1", new RiotRegion("AMERICAS", "LA1"));
-
-		regions.put("LA2", new RiotRegion("AMERICAS", "LA2"));
-
-		regions.put("NA1", new RiotRegion("AMERICAS", "NA1"));
-
-		regions.put("BR1", new RiotRegion("AMERICAS", "BR1"));
-
-		regions.put("EUW1", new RiotRegion("EUROPE", "EUW1"));
-
-		regions.put("EUN1", new RiotRegion("EUROPE", "EUN1"));
-
+		regions.put("BR", new RiotRegion("AMERICAS", "BR"));
+		regions.put("EUN", new RiotRegion("EUROPE", "EUN"));
+		regions.put("EUW", new RiotRegion("EUROPE", "EUW"));
+		regions.put("JP", new RiotRegion("ASIA", "JP"));
 		regions.put("KR", new RiotRegion("ASIA", "KR"));
-
-		regions.put("JP1", new RiotRegion("ASIA", "JP1"));
+		regions.put("LAN", new RiotRegion("AMERICAS", "LAN"));
+		regions.put("LAS", new RiotRegion("AMERICAS", "LAS"));
+		regions.put("ME", new RiotRegion("EUROPE", "ME"));
+		regions.put("NA", new RiotRegion("AMERICAS", "NA"));
+		regions.put("OC", new RiotRegion("SEA", "OC"));
+		regions.put("RU", new RiotRegion("EUROPE", "RU"));
+		regions.put("SG", new RiotRegion("SEA", "SG"));
+		regions.put("TR", new RiotRegion("EUROPE", "TR"));
+		regions.put("TW", new RiotRegion("SEA", "TW"));
+		regions.put("VN", new RiotRegion("SEA", "VN"));
 	}
 
 	/*
 	 * Busca la cuenta por Riot ID Usa routing regional
 	 */
-	public RiotAccountDTO summonerByTag(String name, String tag, String server) {
-
+	public RiotAccountDto summonerByTag(String name, String tag, String server) {
+		
 		RiotRegion region = getRegion(server);
 
-		String url = regionalRoutes.get(region.getRegion()) + "/riot/account/v1/accounts/by-riot-id/" + name + "/"
+		String url = regionalRoutes.get(region.getRegion()) + "/riot/account/v1/accounts/by-riot-id/" + name.replace(" ", "%20") + "/"
 				+ tag;
 
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("X-Riot-Token", token).GET().build();
@@ -86,7 +92,7 @@ public class RiotApiClient {
 
 			ObjectMapper mapper = new ObjectMapper();
 
-			return mapper.readValue(response.body(), RiotAccountDTO.class);
+			return mapper.readValue(response.body(), RiotAccountDto.class);
 
 		} catch (Exception e) {
 
@@ -97,7 +103,7 @@ public class RiotApiClient {
 	/*
 	 * Busca información del invocador Usa servidor de plataforma
 	 */
-	public HttpResponse<String> summonerByPuuid(String puuid, String server) {
+	public RiotSummonerDto summonerByPuuid(String puuid, String server) {
 
 		RiotRegion region = getRegion(server);
 
@@ -106,8 +112,13 @@ public class RiotApiClient {
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("X-Riot-Token", token).GET().build();
 
 		try {
-
-			return client.send(request, HttpResponse.BodyHandlers.ofString());
+			HttpResponse<String> response =  client.send(request, HttpResponse.BodyHandlers.ofString());
+			
+			RiotSummonerDto dto = objectMapper.readValue(response.body(), RiotSummonerDto.class);
+			
+			return dto;
+			
+			
 
 		} catch (Exception e) {
 

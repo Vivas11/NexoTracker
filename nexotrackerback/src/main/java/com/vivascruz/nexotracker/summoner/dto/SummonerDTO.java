@@ -2,76 +2,106 @@ package com.vivascruz.nexotracker.summoner.dto;
 
 import java.util.Objects;
 
-/**
- * Represents the response returned to clients containing player profile information.
- */
-public class SummonerDTO {
-	
-	/**
-	 * Player unique identifier
-	 */
+public class SummonerDto {
+
 	private String puuid;
-	/**
-	 * Integer that represents the icon which is used by the player in game
-	 */
-	private int profileIconId;
-	/**
-	 * Date summoner was last modified specified as epoch milliseconds
-	 */
-	private long revisionDate;
-	/**
-	 * Summoner level associated with the summoner
-	 */
-	private long summonerLevel;
 	
-	public SummonerDTO() {
+	private String name;
+
+	private String tag;
+
+	private String server;
+
+	private Integer profileIconId;
+
+	private Long revisionDate;
+
+	private Long summonerLevel;
+
+	public SummonerDto() {
 	}
 
-	public SummonerDTO(int profileIconID, long revisionDate, long summonerLevel) {
-		this.profileIconId = profileIconID;
-		this.revisionDate = revisionDate;
-		this.summonerLevel = summonerLevel;
-	}
 	
-	
-
-	public SummonerDTO(String puuid, int profileIconId, long revisionDate, long summonerLevel) {
+	public SummonerDto(String puuid, String name, String tag, String server, Integer profileIconId, Long revisionDate,
+			Long summonerLevel) {
 		super();
 		this.puuid = puuid;
+		this.name = name;
+		this.tag = tag;
+		this.server = server;
 		this.profileIconId = profileIconId;
 		this.revisionDate = revisionDate;
 		this.summonerLevel = summonerLevel;
 	}
+
+	
 
 	public String getPuuid() {
 		return puuid;
 	}
 
+
 	public void setPuuid(String puuid) {
 		this.puuid = puuid;
 	}
 
-	public int getProfileIconId() {
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getTag() {
+		return tag;
+	}
+
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+
+	public String getServer() {
+		return server;
+	}
+
+
+	public void setServer(String server) {
+		this.server = server;
+	}
+
+
+	public Integer getProfileIconId() {
 		return profileIconId;
 	}
 
-	public void setProfileIconId(int profileIconId) {
+
+	public void setProfileIconId(Integer profileIconId) {
 		this.profileIconId = profileIconId;
 	}
 
-	public long getRevisionDate() {
+
+	public Long getRevisionDate() {
 		return revisionDate;
 	}
 
-	public void setRevisionDate(long revisionDate) {
+
+	public void setRevisionDate(Long revisionDate) {
 		this.revisionDate = revisionDate;
 	}
 
-	public long getSummonerLevel() {
+
+	public Long getSummonerLevel() {
 		return summonerLevel;
 	}
 
-	public void setSummonerLevel(long summonerLevel) {
+
+	public void setSummonerLevel(Long summonerLevel) {
 		this.summonerLevel = summonerLevel;
 	}
 
@@ -89,7 +119,7 @@ public class SummonerDTO {
 	    if (obj == null || getClass() != obj.getClass())
 	        return false;
 
-	    SummonerDTO other = (SummonerDTO) obj;
+	    SummonerDto other = (SummonerDto) obj;
 
 	    return Objects.equals(puuid, other.puuid);
 	}

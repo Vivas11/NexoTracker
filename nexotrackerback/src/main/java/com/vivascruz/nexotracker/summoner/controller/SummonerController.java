@@ -15,14 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vivascruz.nexotracker.riot.RiotApiClient;
-import com.vivascruz.nexotracker.summoner.dto.SummonerDTO;
+import com.vivascruz.nexotracker.summoner.dto.SummonerDto;
 import com.vivascruz.nexotracker.summoner.service.SummonerService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/summoner")
-@CrossOrigin(origins = { "http://localhost:8080", "http://localhost:8081" })
 @Transactional
 @Tag(name = "Summoners Management", description = "Endpoints for managing summoners")
 public class SummonerController {
@@ -34,7 +33,7 @@ public class SummonerController {
 	}
 
 	@GetMapping("/getSummonerByTag")
-	public ResponseEntity<SummonerDTO> getSummoner(@RequestParam String name, @RequestParam String tag,
+	public ResponseEntity<SummonerDto> getSummoner(@RequestParam String name, @RequestParam String tag,
 			@RequestParam String server) {
 
         return ResponseEntity.status(200).body(summonerService.getByTag(name, tag, server));

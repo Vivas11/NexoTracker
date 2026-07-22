@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vivascruz.nexotracker.riot.RiotAccountDto;
 import com.vivascruz.nexotracker.riot.RiotApiClient;
-import com.vivascruz.nexotracker.summoner.dto.SummonerDTO;
+import com.vivascruz.nexotracker.riot.RiotSummonerDto;
+import com.vivascruz.nexotracker.summoner.dto.SummonerDto;
 import com.vivascruz.nexotracker.summoner.entity.Summoner;
 import com.vivascruz.nexotracker.summoner.repository.SummonerRepository;
 
@@ -27,37 +29,37 @@ public class SummonerService {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@Autowired
-	private ObjectMapper objectMapper;
 	
-	public SummonerDTO getByPuuid(String puuid, String server) {
-		
-		if(exists(puuid)) {
-			return modelMapper.map(summoRepo.findByPuuid(puuid), SummonerDTO.class);
-		}
+	public RiotSummonerDto getByPuuid(String puuid, String server) {
 		
 
 		try {
-		HttpResponse<String> response = riotApi.summonerByPuuid(puuid, server);
+			RiotSummonerDto response = riotApi.summonerByPuuid(puuid, server);
 		
-		SummonerDTO dto = objectMapper.readValue(response.body(), SummonerDTO.class);
-
-        create(dto);
-
-        return modelMapper.map(summoRepo.findByPuuid(puuid), SummonerDTO.class);
+			return response;
 		} catch (Exception e) {
 	        throw new RuntimeException(e);
 	    }
 	}
 	
-	public SummonerDTO getByTag(String name, String tag, String server) {
+	public SummonerDto getByTag(String name, String tag, String server) {
 
-		String puuid = riotApi.summonerByTag(name, tag, server).getPuuid();
+		RiotAccountDto account = riotApi.summonerByTag(name, tag, server);
 		
-		return getByPuuid(puuid, server);
+		String puuid = account.getPuuid();
+
+		if(exists(puuid)) {
+			return modelMapper.map(summoRepo.findByPuuid(puuid), SummonerDto.class);
+		}
 		
+		
+		RiotSummonerDto temp = getByPuuid(puuid, server);
+		SummonerDto dto = new SummonerDto(account.getPuuid(), account.getGameName(), account.getTagLine(), server, temp.getProfileIconId(),  temp.getRevisionDate(), temp.getSummonerLevel());
+		create(dto);
+		return dto;
 	}
 
+	
 	public long count() {
 		return summoRepo.count();
 	}
@@ -66,7 +68,7 @@ public class SummonerService {
 		return summoRepo.existsByPuuid(puuid) ? true : false;
 	}
 
-	public int create(SummonerDTO data) {
+	public int create(SummonerDto data) {
 		if (summoRepo.existsByPuuid(data.getPuuid())) {
 			return 409;
 		}
@@ -80,12 +82,12 @@ public class SummonerService {
 		} 
 	}
 
-	public List<SummonerDTO> getAll() {
+	public List<SummonerDto> getAll() {
 		List<Summoner> entityList = summoRepo.findAll();
-		List<SummonerDTO> dtoList = new ArrayList<>();
+		List<SummonerDto> dtoList = new ArrayList<>();
 		entityList.forEach((entity) -> {
 
-			SummonerDTO dto = modelMapper.map(entity, SummonerDTO.class);
+			SummonerDto dto = modelMapper.map(entity, SummonerDto.class);
 			dtoList.add(dto);
 		});
 
@@ -102,7 +104,7 @@ public class SummonerService {
 		}
 	}
 
-	public int updateById(String id, SummonerDTO newData) {
+	public int updateById(String id, SummonerDto newData) {
 		Optional<Summoner> found = summoRepo.findByPuuid(id);
 
 		if (found.isPresent()) {

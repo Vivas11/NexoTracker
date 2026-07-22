@@ -1,14 +1,14 @@
 package com.vivascruz.nexotracker.riot;
 
-public class RiotAccountDTO {
+public class RiotAccountDto {
 
     private String puuid;
     private String gameName;
     private String tagLine;
 
-    public RiotAccountDTO() {
+    public RiotAccountDto() {
 	}
-	public RiotAccountDTO(String puuid, String gameName, String tagLine) {
+	public RiotAccountDto(String puuid, String gameName, String tagLine) {
 		super();
 		this.puuid = puuid;
 		this.gameName = gameName;
