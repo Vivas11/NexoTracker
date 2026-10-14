@@ -1,6 +1,7 @@
 <h1>Prueba Profile</h1>
 @if(summoner()){
   <div>
+    <img src="/dragontail-16.14.1/16.14.1/img/profileicon/{{ summoner()?.profileIconId }}.png" alt="Profile Icon">
     <p>Nombre: {{ summoner()?.name }}</p>
     <p>Nivel: {{ summoner()?.summonerLevel }}</p>
   </div>

@@ -20,7 +20,7 @@ public class RiotApiClient {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private final String token = "RGAPI-abb80456-eaf5-426a-aea2-87795e278d7e";
+	private final String token = "RGAPI-cc2d50a0-05a3-499d-a077-8518f5bb4627";
 
 	private final Map<String, RiotRegion> regions = new HashMap<>();
 
